@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Althea – Coach de Ciberseguridad</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg-gradient: radial-gradient(circle at top left, #eff4ff 0%, #f6f9ff 40%, #f5f6fb 70%, #f1f2f6 100%);
+      --surface-primary: rgba(255, 255, 255, 0.82);
+      --surface-secondary: rgba(246, 248, 255, 0.76);
+      --surface-message-user: #1750ff;
+      --surface-message-bot: rgba(255, 255, 255, 0.95);
+      --surface-input: rgba(255, 255, 255, 0.9);
+      --border-soft: rgba(17, 24, 39, 0.08);
+      --border-strong: rgba(17, 24, 39, 0.14);
+      --shadow-soft: 0 25px 60px rgba(31, 41, 55, 0.12);
+      --shadow-header: 0 12px 32px rgba(15, 23, 42, 0.08);
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-tertiary: #64748b;
+      --text-inverse: #ffffff;
+      --brand-primary: #1f46ff;
+      --brand-secondary: #5c6cff;
+      --brand-accent: #a5b4ff;
+      --radius-lg: 24px;
+      --radius-md: 18px;
+      --radius-sm: 14px;
+      --radius-xs: 12px;
+      --transition: 180ms ease;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 20px;
+    }
+
+    .app-shell {
+      width: min(980px, 100%);
+      background: var(--surface-primary);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255,255,255,0.6);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(22px);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      overflow: hidden;
+    }
+
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      padding: 28px 32px 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.72) 100%);
+      border-bottom: 1px solid rgba(120,132,171,0.12);
+      box-shadow: var(--shadow-header);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .brand-mark {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-inverse);
+      letter-spacing: 0.02em;
+      box-shadow: 0 18px 40px rgba(47, 70, 255, 0.22);
+    }
+
+    .brand-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .brand-title {
+      font-size: clamp(1.2rem, 2vw, 1.4rem);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .brand-subtitle {
+      font-size: 0.92rem;
+      color: var(--text-tertiary);
+    }
+
+    .session-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(23, 80, 255, 0.08);
+      border-radius: 999px;
+      padding: 10px 16px;
+      color: var(--brand-primary);
+      font-weight: 500;
+      font-size: 0.88rem;
+      letter-spacing: 0.01em;
+      border: 1px solid rgba(23, 80, 255, 0.18);
+    }
+
+    .session-pill::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--brand-primary);
+      box-shadow: 0 0 0 3px rgba(23, 80, 255, 0.2);
+    }
+
+    .chat-area {
+      position: relative;
+      background: linear-gradient(180deg, rgba(247,249,255,0.75) 0%, rgba(244,246,255,0.95) 100%);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .messages {
+      flex: 1;
+      overflow: auto;
+      padding-right: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(99,102,241,0.3) transparent;
+    }
+
+    .messages::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    .messages::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .messages::-webkit-scrollbar-thumb {
+      background: rgba(99,102,241,0.28);
+      border-radius: 999px;
+      border: 2px solid transparent;
+    }
+
+    .msg {
+      max-width: min(78%, 520px);
+      padding: 16px 20px;
+      border-radius: var(--radius-md);
+      line-height: 1.6;
+      font-size: 0.98rem;
+      position: relative;
+      letter-spacing: 0.01em;
+      word-break: break-word;
+      white-space: pre-line;
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+      backdrop-filter: blur(6px);
+    }
+
+    .msg.bot {
+      align-self: flex-start;
+      background: var(--surface-message-bot);
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      color: var(--text-primary);
+    }
+
+    .msg.user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, var(--brand-primary), #5261ff);
+      color: var(--text-inverse);
+      border: none;
+      box-shadow: 0 25px 45px rgba(23, 80, 255, 0.28);
+    }
+
+    .msg.user::after,
+    .msg.bot::after {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      bottom: -7px;
+      border-radius: 4px;
+      transform: rotate(45deg);
+    }
+
+    .msg.user::after {
+      right: 18px;
+      background: inherit;
+      box-shadow: 15px 18px 30px rgba(23, 80, 255, 0.25);
+    }
+
+    .msg.bot::after {
+      left: 18px;
+      background: inherit;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.04);
+      border-right: 1px solid rgba(15, 23, 42, 0.04);
+    }
+
+    .assistant-state {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(99,102,241,0.12);
+      color: var(--brand-primary);
+      padding: 12px 18px;
+      border-radius: var(--radius-sm);
+      width: fit-content;
+      font-size: 0.92rem;
+      font-weight: 500;
+      border: 1px solid rgba(99,102,241,0.18);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+    }
+
+    .typing-dots {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .typing-dots span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #5261ff, #8b95ff);
+      opacity: 0.4;
+      animation: typingPulse 1200ms infinite ease-in-out;
+    }
+
+    .typing-dots span:nth-child(1) { animation-delay: 0ms; }
+    .typing-dots span:nth-child(2) { animation-delay: 120ms; }
+    .typing-dots span:nth-child(3) { animation-delay: 240ms; }
+
+    .typing-label {
+      letter-spacing: 0.02em;
+    }
+
+    @keyframes typingPulse {
+      0%, 100% { transform: translateY(0); opacity: 0.3; }
+      40% { transform: translateY(-3px); opacity: 0.9; }
+      60% { transform: translateY(0); opacity: 0.6; }
+    }
+
+    .app-tip {
+      font-size: 0.9rem;
+      color: var(--text-tertiary);
+      padding: 14px 18px;
+      background: rgba(148, 163, 184, 0.12);
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      width: fit-content;
+      max-width: min(92%, 540px);
+      line-height: 1.55;
+      backdrop-filter: blur(6px);
+    }
+
+    .composer {
+      background: linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.84) 100%);
+      padding: 24px 32px;
+      border-top: 1px solid rgba(205,213,224,0.32);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .composer form {
+      display: flex;
+      align-items: stretch;
+      gap: 14px;
+    }
+
+    .composer-input {
+      flex: 1;
+      background: var(--surface-input);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      font-size: 1rem;
+      color: var(--text-primary);
+      transition: border var(--transition), box-shadow var(--transition), transform var(--transition);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 12px 30px rgba(148,163,184,0.18);
+    }
+
+    .composer-input::placeholder {
+      color: rgba(100,116,139,0.8);
+    }
+
+    .composer-input:focus {
+      outline: none;
+      border-color: rgba(23, 80, 255, 0.35);
+      box-shadow: 0 18px 45px rgba(23, 80, 255, 0.22);
+      transform: translateY(-1px);
+    }
+
+    .composer-button {
+      padding: 0 26px;
+      min-width: 120px;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+      color: var(--text-inverse);
+      transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
+      box-shadow: 0 18px 42px rgba(23, 80, 255, 0.28);
+    }
+
+    .composer-button:hover:not([disabled]) {
+      transform: translateY(-2px);
+      box-shadow: 0 24px 50px rgba(23, 80, 255, 0.32);
+      filter: brightness(1.02);
+    }
+
+    .composer-button:active:not([disabled]) {
+      transform: translateY(0);
+      box-shadow: 0 14px 36px rgba(23, 80, 255, 0.26);
+      filter: brightness(0.98);
+    }
+
+    .composer-button[disabled] {
+      cursor: not-allowed;
+      opacity: 0.6;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .composer-hint {
+      font-size: 0.86rem;
+      color: var(--text-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: 0.01em;
+    }
+
+    .composer-hint::before {
+      content: '';
+      font-family: 'Segoe UI Symbol', sans-serif;
+      font-size: 1rem;
+      opacity: 0.7;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        padding: 18px;
+      }
+      .app-shell {
+        border-radius: 22px;
+      }
+      .app-header {
+        padding: 24px 26px 20px;
+      }
+      .chat-area {
+        padding: 24px 22px;
+      }
+      .composer {
+        padding: 22px 24px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 14px;
+      }
+      .app-shell {
+        border-radius: 18px;
+      }
+      .app-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      .session-pill {
+        width: 100%;
+        justify-content: center;
+      }
+      .chat-area {
+        padding: 20px 18px;
+      }
+      .messages {
+        padding-right: 0;
+      }
+      .msg {
+        max-width: 100%;
+      }
+      .composer form {
+        flex-direction: column;
+        gap: 12px;
+      }
+      .composer-button {
+        width: 100%;
+        min-height: 54px;
+      }
+      .composer-hint {
+        justify-content: center;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .brand-mark {
+        width: 46px;
+        height: 46px;
+        font-size: 20px;
+      }
+      .brand-title {
+        font-size: 1.18rem;
+      }
+      .composer {
+        padding: 18px;
+      }
+      .chat-area {
+        padding: 18px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="brand-group">
+        <span class="brand-mark">A</span>
+        <div class="brand-copy">
+          <span class="brand-title">Althea Coach</span>
+          <span class="brand-subtitle">Ciberseguridad asistida por IA</span>
+        </div>
+      </div>
+      <div class="session-pill">Sesión demo activa</div>
+    </header>
+
+    <main class="chat-area">
+      <div class="messages" id="list"></div>
+
+      <div class="assistant-state">
+        <div class="typing-indicator" id="typing" style="display:none;">
+          <span class="typing-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+          <span class="typing-label">Althea está escribiendo…</span>
+        </div>
+      </div>
+    </main>
+
+    <footer class="composer">
+      <form id="f" novalidate>
+        <input id="m" class="composer-input" placeholder="Escribe tu mensaje…" autocomplete="off">
+        <button id="b" class="composer-button" type="submit">Enviar</button>
+      </form>
+      <div class="composer-hint">Althea responde en segundos con recomendaciones prácticas.</div>
+    </footer>
+  </div>
+
+  <script>
+    const WEBHOOK_URL = "https://althea1.app.n8n.cloud/webhook/coaching-summary";
+    const SESSION_KEY = "althea_session_id";
+    let sessionId = sessionStorage.getItem(SESSION_KEY);
+    if (!sessionId) {
+      sessionId = "sess-" + crypto.randomUUID();
+      sessionStorage.setItem(SESSION_KEY, sessionId);
+    }
+  
+    const list = document.getElementById('list');
+    const form = document.getElementById('f');
+    const input = document.getElementById('m');
+    const btn = document.getElementById('b');
+    const typing = document.getElementById('typing');
+  
+    function push(text, who){
+      const div = document.createElement('div');
+      div.className = 'msg ' + who;
+      div.textContent = text;
+      list.appendChild(div);
+      list.scrollTop = list.scrollHeight;
+    }
+  
+    async function ask(text){
+      typing.style.display = 'flex';
+      let data;
+      try {
+        const res = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ message: text, sessionId }) // <-- usar sessionId
+        });
+        const ct = res.headers.get('content-type') || '';
+        if (!res.ok) throw new Error('HTTP ' + res.status + ' (' + res.statusText + ')');
+        data = ct.includes('application/json') ? await res.json() : { reply: await res.text() };
+      } catch (err) {
+        data = { reply: 'Error de red/CORS o Webhook no disponible.\n' + err.message };
+      } finally {
+        typing.style.display = 'none';
+      }
+      push(data.reply || '(sin respuesta)', 'bot');
+    }
+  
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const text = input.value.trim();
+      if(!text) return;
+      push(text,'user');
+      input.value = '';
+      btn.disabled = true;
+      try { await ask(text); } finally { btn.disabled = false; }
+    });
+  
+    window.addEventListener('load', () => { ask('hola'); });
+  </script>  
+</body>
+</html>
