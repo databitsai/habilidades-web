@@ -525,24 +525,78 @@
         // MAGIA: Si ya tenemos un threadId guardado, lo agregamos al paquete
         if (threadId) {
           datosAEnviar.thread_id = threadId;
+          console.log("Enviando con thread_id:", threadId);
+        } else {
+          console.log("Primera petición, sin thread_id aún");
         }
+
+        console.log("📤 Enviando datos:", datosAEnviar);
 
         const res = await fetch(WEBHOOK_URL, {
           method: 'POST',
           headers: {'Content-Type':'application/json'},
           body: JSON.stringify(datosAEnviar) // Enviamos el paquete con o sin ID
         });
+        
+        if (!res.ok) {
+          const errorText = await res.text().catch(() => 'Sin detalles del error');
+          throw new Error(`HTTP ${res.status} (${res.statusText}): ${errorText}`);
+        }
+        
+        // Leemos el texto primero para poder inspeccionarlo
+        const responseText = await res.text();
+        console.log("Respuesta cruda del servidor:", responseText);
+        
+        // Intentamos parsear como JSON
         const ct = res.headers.get('content-type') || '';
-        if (!res.ok) throw new Error('HTTP ' + res.status + ' (' + res.statusText + ')');
-        data = ct.includes('application/json') ? await res.json() : { reply: await res.text() };
+        if (ct.includes('application/json') || responseText.trim().startsWith('{') || responseText.trim().startsWith('[')) {
+          try {
+            if (!responseText.trim()) {
+              throw new Error('La respuesta está vacía');
+            }
+            data = JSON.parse(responseText);
+          } catch (parseError) {
+            console.error("❌ Error al parsear JSON:", parseError);
+            console.error("Respuesta recibida (texto):", responseText);
+            throw new Error(`La respuesta no es JSON válido: ${parseError.message}. Respuesta recibida: ${responseText.substring(0, 200)}`);
+          }
+        } else {
+          // Si no es JSON, usamos el texto como respuesta
+          data = { reply: responseText || '(respuesta vacía)' };
+        }
+
+        console.log("Respuesta parseada:", data);
 
         // AQUÍ ES DONDE ATRAPAMOS EL ID DE VUELTA
         if (data.thread_id) {
           threadId = data.thread_id; // ¡Guardado para la próxima!
-          console.log("Thread ID guardado:", data.thread_id);
+          console.log("✅ Thread ID guardado:", data.thread_id);
+        } else {
+          console.warn("⚠️ La respuesta no incluye thread_id. Revisa la configuración de n8n.");
         }
       } catch (err) {
-        data = { reply: 'Error de red/CORS o Webhook no disponible.\n' + err.message };
+        console.error("❌ Error completo:", err);
+        console.error("Stack trace:", err.stack);
+        
+        // Mensaje más específico según el tipo de error
+        let errorMsg = 'Error al conectar con el servidor.\n\n';
+        
+        if (err.message.includes('CORS') || err.message.includes('Failed to fetch')) {
+          errorMsg += '🔧 Error de CORS: Necesitas configurar los headers CORS en n8n.\n';
+          errorMsg += 'Revisa el archivo INSTRUCCIONES_N8N.md para más detalles.';
+        } else if (err.message.includes('JSON') || err.message.includes('parse')) {
+          errorMsg += '⚠️ Error al procesar la respuesta del servidor:\n';
+          errorMsg += err.message + '\n\n';
+          errorMsg += '🔍 Posibles causas:\n';
+          errorMsg += '- La respuesta de n8n no es JSON válido\n';
+          errorMsg += '- La respuesta está vacía\n';
+          errorMsg += '- Revisa la configuración del nodo "Respond to Webhook" en n8n\n';
+          errorMsg += '- Abre la consola del navegador (F12) para ver más detalles';
+        } else {
+          errorMsg += 'Detalles: ' + err.message;
+        }
+        
+        data = { reply: errorMsg };
       } finally {
         typing.style.display = 'none';
       }
