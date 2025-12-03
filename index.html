@@ -495,6 +495,9 @@
       sessionStorage.setItem(SESSION_KEY, sessionId);
     }
   
+    // Variable para guardar el thread_id (thread_id inicialmente es null)
+    let threadId = null;
+  
     const list = document.getElementById('list');
     const form = document.getElementById('f');
     const input = document.getElementById('m');
@@ -513,14 +516,31 @@
       typing.style.display = 'flex';
       let data;
       try {
+        // Preparamos los datos básicos
+        const datosAEnviar = { 
+          message: text,
+          sessionId 
+        };
+
+        // MAGIA: Si ya tenemos un threadId guardado, lo agregamos al paquete
+        if (threadId) {
+          datosAEnviar.thread_id = threadId;
+        }
+
         const res = await fetch(WEBHOOK_URL, {
           method: 'POST',
           headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({ message: text, sessionId }) // <-- usar sessionId
+          body: JSON.stringify(datosAEnviar) // Enviamos el paquete con o sin ID
         });
         const ct = res.headers.get('content-type') || '';
         if (!res.ok) throw new Error('HTTP ' + res.status + ' (' + res.statusText + ')');
         data = ct.includes('application/json') ? await res.json() : { reply: await res.text() };
+
+        // AQUÍ ES DONDE ATRAPAMOS EL ID DE VUELTA
+        if (data.thread_id) {
+          threadId = data.thread_id; // ¡Guardado para la próxima!
+          console.log("Thread ID guardado:", data.thread_id);
+        }
       } catch (err) {
         data = { reply: 'Error de red/CORS o Webhook no disponible.\n' + err.message };
       } finally {
