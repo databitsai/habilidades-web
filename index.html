@@ -3,17 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Althea – Coach de Ciberseguridad</title>
+  <title>Soft Skills Coach</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       color-scheme: light;
-      --bg-gradient: radial-gradient(circle at top left, #eff4ff 0%, #f6f9ff 40%, #f5f6fb 70%, #f1f2f6 100%);
+      --bg-gradient: radial-gradient(circle at top left, #f3e8ff 0%, #faf5ff 40%, #f5f3ff 70%, #f1eef6 100%);
       --surface-primary: rgba(255, 255, 255, 0.82);
-      --surface-secondary: rgba(246, 248, 255, 0.76);
-      --surface-message-user: #1750ff;
+      --surface-secondary: rgba(250, 245, 255, 0.76);
+      --surface-message-user: #9333ea;
       --surface-message-bot: rgba(255, 255, 255, 0.95);
       --surface-input: rgba(255, 255, 255, 0.9);
       --border-soft: rgba(17, 24, 39, 0.08);
@@ -24,9 +24,9 @@
       --text-secondary: #475569;
       --text-tertiary: #64748b;
       --text-inverse: #ffffff;
-      --brand-primary: #1f46ff;
-      --brand-secondary: #5c6cff;
-      --brand-accent: #a5b4ff;
+      --brand-primary: #9333ea;
+      --brand-secondary: #a855f7;
+      --brand-accent: #c084fc;
       --radius-lg: 24px;
       --radius-md: 18px;
       --radius-sm: 14px;
@@ -93,7 +93,7 @@
       font-weight: 700;
       color: var(--text-inverse);
       letter-spacing: 0.02em;
-      box-shadow: 0 18px 40px rgba(47, 70, 255, 0.22);
+      box-shadow: 0 18px 40px rgba(147, 51, 234, 0.22);
     }
 
     .brand-copy {
@@ -117,14 +117,14 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      background: rgba(23, 80, 255, 0.08);
+      background: rgba(147, 51, 234, 0.08);
       border-radius: 999px;
       padding: 10px 16px;
       color: var(--brand-primary);
       font-weight: 500;
       font-size: 0.88rem;
       letter-spacing: 0.01em;
-      border: 1px solid rgba(23, 80, 255, 0.18);
+      border: 1px solid rgba(147, 51, 234, 0.18);
     }
 
     .session-pill::before {
@@ -133,12 +133,12 @@
       height: 8px;
       border-radius: 50%;
       background: var(--brand-primary);
-      box-shadow: 0 0 0 3px rgba(23, 80, 255, 0.2);
+      box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.2);
     }
 
     .chat-area {
       position: relative;
-      background: linear-gradient(180deg, rgba(247,249,255,0.75) 0%, rgba(244,246,255,0.95) 100%);
+      background: linear-gradient(180deg, rgba(250,245,255,0.75) 0%, rgba(245,243,255,0.95) 100%);
       padding: 32px;
       display: flex;
       flex-direction: column;
@@ -153,7 +153,7 @@
       flex-direction: column;
       gap: 16px;
       scrollbar-width: thin;
-      scrollbar-color: rgba(99,102,241,0.3) transparent;
+      scrollbar-color: rgba(168,85,247,0.3) transparent;
     }
 
     .messages::-webkit-scrollbar {
@@ -165,7 +165,7 @@
     }
 
     .messages::-webkit-scrollbar-thumb {
-      background: rgba(99,102,241,0.28);
+      background: rgba(168,85,247,0.28);
       border-radius: 999px;
       border: 2px solid transparent;
     }
@@ -193,10 +193,10 @@
 
     .msg.user {
       align-self: flex-end;
-      background: linear-gradient(135deg, var(--brand-primary), #5261ff);
+      background: linear-gradient(135deg, var(--brand-primary), #a855f7);
       color: var(--text-inverse);
       border: none;
-      box-shadow: 0 25px 45px rgba(23, 80, 255, 0.28);
+      box-shadow: 0 25px 45px rgba(147, 51, 234, 0.28);
     }
 
     .msg.user::after,
@@ -213,7 +213,7 @@
     .msg.user::after {
       right: 18px;
       background: inherit;
-      box-shadow: 15px 18px 30px rgba(23, 80, 255, 0.25);
+      box-shadow: 15px 18px 30px rgba(147, 51, 234, 0.25);
     }
 
     .msg.bot::after {
@@ -233,14 +233,14 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      background: rgba(99,102,241,0.12);
+      background: rgba(168,85,247,0.12);
       color: var(--brand-primary);
       padding: 12px 18px;
       border-radius: var(--radius-sm);
       width: fit-content;
       font-size: 0.92rem;
       font-weight: 500;
-      border: 1px solid rgba(99,102,241,0.18);
+      border: 1px solid rgba(168,85,247,0.18);
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
     }
 
@@ -254,7 +254,7 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #5261ff, #8b95ff);
+      background: linear-gradient(135deg, #a855f7, #c084fc);
       opacity: 0.4;
       animation: typingPulse 1200ms infinite ease-in-out;
     }
@@ -319,8 +319,8 @@
 
     .composer-input:focus {
       outline: none;
-      border-color: rgba(23, 80, 255, 0.35);
-      box-shadow: 0 18px 45px rgba(23, 80, 255, 0.22);
+      border-color: rgba(147, 51, 234, 0.35);
+      box-shadow: 0 18px 45px rgba(147, 51, 234, 0.22);
       transform: translateY(-1px);
     }
 
@@ -336,18 +336,18 @@
       background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
       color: var(--text-inverse);
       transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
-      box-shadow: 0 18px 42px rgba(23, 80, 255, 0.28);
+      box-shadow: 0 18px 42px rgba(147, 51, 234, 0.28);
     }
 
     .composer-button:hover:not([disabled]) {
       transform: translateY(-2px);
-      box-shadow: 0 24px 50px rgba(23, 80, 255, 0.32);
+      box-shadow: 0 24px 50px rgba(147, 51, 234, 0.32);
       filter: brightness(1.02);
     }
 
     .composer-button:active:not([disabled]) {
       transform: translateY(0);
-      box-shadow: 0 14px 36px rgba(23, 80, 255, 0.26);
+      box-shadow: 0 14px 36px rgba(147, 51, 234, 0.26);
       filter: brightness(0.98);
     }
 
@@ -453,10 +453,10 @@
   <div class="app-shell">
     <header class="app-header">
       <div class="brand-group">
-        <span class="brand-mark">A</span>
+        <span class="brand-mark">S</span>
         <div class="brand-copy">
-          <span class="brand-title">Althea Coach</span>
-          <span class="brand-subtitle">Ciberseguridad asistida por IA</span>
+          <span class="brand-title">Soft Skills Coach</span>
+          <span class="brand-subtitle">Desarrollo de habilidades blandas asistido por IA</span>
         </div>
       </div>
       <div class="session-pill">Sesión demo activa</div>
@@ -472,7 +472,7 @@
             <span></span>
             <span></span>
           </span>
-          <span class="typing-label">Althea está escribiendo…</span>
+          <span class="typing-label">Soft Skills Coach está escribiendo…</span>
         </div>
       </div>
     </main>
@@ -482,12 +482,13 @@
         <input id="m" class="composer-input" placeholder="Escribe tu mensaje…" autocomplete="off">
         <button id="b" class="composer-button" type="submit">Enviar</button>
       </form>
-      <div class="composer-hint">Althea responde en segundos con recomendaciones prácticas.</div>
+      <div class="composer-hint">Soft Skills Coach responde en segundos con recomendaciones prácticas.</div>
     </footer>
   </div>
 
   <script>
-    const WEBHOOK_URL = "https://althea1.app.n8n.cloud/webhook/9eb9fd48-0c46-4575-89ca-c59cd006c9a6";
+    //const WEBHOOK_URL = "https://althea1.app.n8n.cloud/webhook/9eb9fd48-0c46-4575-89ca-c59cd006c9a6";
+    const WEBHOOK_URL = "https://databitsai.app.n8n.cloud/webhook/b87c9efc-885b-4813-9f8e-f43a1cdb1e51";
     const SESSION_KEY = "althea_session_id";
     let sessionId = sessionStorage.getItem(SESSION_KEY);
     if (!sessionId) {
